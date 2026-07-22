@@ -17,10 +17,16 @@ pip install -e ".[anthropic,dev]"
 ## Checks (all must pass)
 
 ```bash
-python -m pytest        # tests — run fully offline, no API key
-python -m ruff check .  # lint
-python -m mypy glia     # types (best-effort)
+python -m pytest --cov=glia --cov-report=term-missing  # tests + coverage, fully offline
+python -m ruff check .                                  # lint
+python -m mypy glia                                     # types (best-effort)
+python -m mkdocs build --strict                         # docs (needs the [docs] extra)
 ```
+
+CI enforces a coverage floor (currently 90%; the suite sits near 98%). The docs
+are a bilingual (EN/RU) MkDocs Material site — English pages are `docs/<name>.md`
+and Russian translations are `docs/<name>.ru.md`; untranslated pages fall back to
+English automatically.
 
 The whole test suite runs against the offline `EchoLLM`, so it's fast and
 deterministic. New behaviour should come with a test that uses `EchoLLM` — if a

@@ -25,6 +25,9 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# Docs build output
+site/
+
 # Local secrets / scratch
 .env
 *.local

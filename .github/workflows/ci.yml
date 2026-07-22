@@ -29,8 +29,8 @@ jobs:
       - name: Lint (ruff)
         run: python -m ruff check .
 
-      - name: Tests (pytest, fully offline)
-        run: python -m pytest -q
+      - name: Tests (pytest, fully offline) + coverage gate
+        run: python -m pytest -q --cov=glia --cov-report=term-missing --cov-fail-under=90
 
       - name: Examples run offline
         run: |

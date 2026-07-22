@@ -1,0 +1,37 @@
+name: Docs
+
+# Builds the bilingual (EN/RU) MkDocs site and deploys it to GitHub Pages
+# (the gh-pages branch) on every push to master. No token needed — the default
+# GITHUB_TOKEN with contents:write permission is enough.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: pip install "mkdocs-material>=9.5" "mkdocs-static-i18n>=1.2"
+
+      - name: Build (strict) and deploy to gh-pages
+        run: |
+          python -m mkdocs build --strict
+          python -m mkdocs gh-deploy --force

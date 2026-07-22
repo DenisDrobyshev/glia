@@ -4,6 +4,22 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] — 2026-07-22
+
+### Changed
+- `_stringify` (tool-result rendering) now JSON-encodes only containers and uses
+  `str()` for everything else — a plain object no longer comes back wrapped in
+  quotes.
+
+### Docs & tests
+- Test suite expanded to **110 offline tests, ~98% coverage** (adds full offline
+  coverage of the Claude adapter via a fake client, plus types, llm/echo,
+  approval, structured, evals, memory, tools, and trajectory edge cases). CI now
+  enforces a coverage floor.
+- **Bilingual (EN/RU) documentation site** (MkDocs Material + i18n): home,
+  getting started, guide, and architecture in English and Russian, with
+  auto-deploy to GitHub Pages. Added `README.ru.md`.
+
 ## [0.2.0] — 2026-07-22
 
 Refinements that deepen the glass-box thesis. Every new capability is visible in

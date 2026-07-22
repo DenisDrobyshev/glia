@@ -64,7 +64,7 @@ from .trajectory import (
 )
 from .types import Message, Text, Thinking, ToolResult, ToolUse, Usage, assistant, user
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "__version__",

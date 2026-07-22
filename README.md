@@ -1,5 +1,7 @@
 # glia
 
+**English** · [Русский](README.ru.md) · [📖 Docs](https://denisdrobyshev.github.io/glia/)
+
 **A glass-box, minimal library for building LLM agents.** Every model call, tool
 call, and state transition is a plain object you can log, snapshot, and replay.
 No hidden control flow. The whole loop fits in one file you can read in an
@@ -137,6 +139,7 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Project docs
 
+- 📖 **[Documentation site](https://denisdrobyshev.github.io/glia/)** — full guide, available in **English** and **Русский**
 - [Strategy & market analysis](docs/STRATEGY.md) — why glia, and who it competes with
 - [Architecture](docs/ARCHITECTURE.md) — how the whole thing works
 - [Roadmap](docs/ROADMAP.md) — where it's going
@@ -145,9 +148,9 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ## Status
 
 **v0.2 — alpha.** The core thesis is proven end-to-end with a full test suite
-(32 offline tests) and green CI. v0.2 adds streaming, parallel tool execution,
-and a human-in-the-loop approval gate. APIs may still change before 1.0.
-Feedback and issues welcome.
+(110 offline tests, ~98% coverage) and green CI. v0.2 adds streaming, parallel
+tool execution, and a human-in-the-loop approval gate. APIs may still change
+before 1.0. Feedback and issues welcome.
 
 ## License
 

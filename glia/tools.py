@@ -220,13 +220,21 @@ class ToolRegistry:
 
 
 def _stringify(value: Any) -> str:
+    """Render a tool's return value as the string the model will read.
+
+    Strings pass through, ``None`` becomes empty, containers are JSON-encoded
+    (so the model sees structured data), and anything else falls back to
+    ``str()`` — no surprising quotes around a plain object.
+    """
     if isinstance(value, str):
         return value
     if value is None:
         return ""
-    try:
+    if isinstance(value, (dict, list, tuple)):
         import json
 
-        return json.dumps(value, ensure_ascii=False, default=str)
-    except TypeError:
-        return str(value)
+        try:
+            return json.dumps(value, ensure_ascii=False, default=str)
+        except TypeError:
+            return str(value)
+    return str(value)
