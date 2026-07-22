@@ -125,6 +125,18 @@ python examples/06_evals.py             # eval suite
 python examples/07_streaming_and_approval.py # streaming + parallel tools + approval gate
 ```
 
+## Desktop app
+
+glia ships a **graphical shell** — a chat window that also shows the live glass
+box (streaming tokens, tool calls, approvals) as it happens.
+
+- **Download** a standalone build for your OS from the [latest release](https://github.com/DenisDrobyshev/glia/releases/latest) (`glia-shell-windows.exe` / `-macos` / `-linux`) — no Python needed.
+- **Or** `pip install "glia-agents[shell]"` then `glia-shell` for a native window.
+
+It works offline in demo mode out of the box; add an Anthropic API key in
+Settings to chat with real Claude. The whole app is stdlib + one HTML file — see
+[docs/app.md](docs/app.md).
+
 ## Design in one picture
 
 ```
@@ -147,10 +159,10 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.2 — alpha.** The core thesis is proven end-to-end with a full test suite
-(110 offline tests, ~98% coverage) and green CI. v0.2 adds streaming, parallel
-tool execution, and a human-in-the-loop approval gate. APIs may still change
-before 1.0. Feedback and issues welcome.
+**v0.3 — alpha.** The core thesis is proven end-to-end with a full test suite
+(119 offline tests) and green CI. v0.3 adds a downloadable desktop shell; v0.2
+added streaming, parallel tool execution, and a human-in-the-loop approval gate.
+APIs may still change before 1.0. Feedback and issues welcome.
 
 ## License
 

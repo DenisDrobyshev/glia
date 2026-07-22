@@ -4,6 +4,22 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-07-23
+
+### Added
+- **Desktop shell (`glia-shell`)** — a downloadable graphical chat app with a
+  live glass-box event panel. It runs a real `glia.Agent` and streams every
+  event (model calls, tool calls, approvals) to a self-contained single-page UI.
+  - Pure-stdlib local server (`http.server` + Server-Sent Events); the only
+    optional dependency is `pywebview` for the native window (`[shell]` extra),
+    with an automatic browser fallback.
+  - Works offline in demo mode (EchoLLM) out of the box; add an Anthropic API
+    key in Settings — stored locally, never returned to the UI — for real Claude.
+  - New console entry point `glia-shell` and `python -m glia.shell`.
+  - CI workflow builds standalone Windows/macOS/Linux binaries and attaches them
+    to each release.
+- Docs: a "Desktop app" page (EN + RU).
+
 ## [0.2.1] — 2026-07-22
 
 ### Changed

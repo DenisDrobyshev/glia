@@ -60,6 +60,7 @@ nav:
   - Home: index.md
   - Getting started: getting-started.md
   - Guide: guide.md
+  - Desktop app: app.md
   - Architecture: ARCHITECTURE.md
   - Strategy: STRATEGY.md
   - Roadmap: ROADMAP.md

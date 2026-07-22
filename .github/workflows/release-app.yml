@@ -1,0 +1,73 @@
+name: Build desktop app
+
+# Builds standalone downloadable binaries of the glia shell for Windows, macOS,
+# and Linux with PyInstaller. Runs on every published release (attaching the
+# binaries to it) and on manual dispatch (as workflow artifacts you can test).
+#
+# The binaries run in browser mode (the server is pure stdlib, so no native GUI
+# backend is bundled — rock-solid across platforms). `pip install glia-agents[shell]`
+# is the path to the native window via pywebview.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            asset: glia-shell-windows.exe
+            bin: dist/glia-shell.exe
+          - os: macos-latest
+            asset: glia-shell-macos
+            bin: dist/glia-shell
+          - os: ubuntu-latest
+            asset: glia-shell-linux
+            bin: dist/glia-shell
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip pyinstaller
+          pip install ".[anthropic]"
+
+      - name: Build binary
+        run: >
+          pyinstaller --onefile --name glia-shell
+          --collect-data glia.shell
+          --collect-submodules glia
+          --collect-all anthropic
+          glia/shell/__main__.py
+
+      - name: Smoke test (binary launches)
+        shell: bash
+        run: "${{ matrix.bin }} --help"
+
+      - name: Rename asset
+        shell: bash
+        run: cp "${{ matrix.bin }}" "${{ matrix.asset }}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.asset }}
