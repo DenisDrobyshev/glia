@@ -1,0 +1,1032 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A glass-box, minimal library for building LLM agents.">
+      
+      
+      
+        <link rel="canonical" href="https://denisdrobyshev.github.io/glia/STRATEGY/">
+      
+      
+        <link rel="prev" href="../ARCHITECTURE/">
+      
+      
+        <link rel="next" href="../ROADMAP/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../ru/STRATEGY/" hreflang="ru">
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Strategy - glia</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#glia-market-analysis-strategy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="glia" class="md-header__button md-logo" aria-label="glia" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            glia
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../ru/STRATEGY/" hreflang="ru" class="md-select__link">
+              Русский
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DenisDrobyshev/glia" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DenisDrobyshev/glia
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="glia" class="md-nav__button md-logo" aria-label="glia" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    glia
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DenisDrobyshev/glia" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DenisDrobyshev/glia
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ARCHITECTURE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-market-in-one-paragraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The market in one paragraph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-competitive-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Competitive landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The gap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-positioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Positioning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Positioning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-glia-deliberately-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What glia deliberately is NOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-differentiators-the-proof-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Differentiators (the proof points)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-target-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Target users
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-go-to-market-open-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Go-to-market (open source)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-risks-honest-caveats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Risks &amp; honest caveats
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-roadmap-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Roadmap headline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-market-in-one-paragraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The market in one paragraph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-competitive-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Competitive landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-gap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The gap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-positioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Positioning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Positioning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-glia-deliberately-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What glia deliberately is NOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-differentiators-the-proof-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Differentiators (the proof points)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-target-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Target users
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-go-to-market-open-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Go-to-market (open source)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-risks-honest-caveats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Risks &amp; honest caveats
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-roadmap-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Roadmap headline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="glia-market-analysis-strategy">glia — Market Analysis &amp; Strategy<a class="headerlink" href="#glia-market-analysis-strategy" title="Permanent link">&para;</a></h1>
+<p><em>Last updated: July 2026.</em></p>
+<p>This document explains why glia exists, who it competes with, and how it wins a
+defensible slice of a crowded market. It is deliberately honest about where the
+field already has strong answers — glia does not try to beat LangGraph at being
+LangGraph.</p>
+<h2 id="1-the-market-in-one-paragraph">1. The market in one paragraph<a class="headerlink" href="#1-the-market-in-one-paragraph" title="Permanent link">&para;</a></h2>
+<p>Agent frameworks are past the hype phase and into consolidation. Six libraries
+dominate production deployments — LangGraph, CrewAI, the OpenAI Agents SDK, the
+Claude Agent SDK, Google ADK, and the merged Microsoft Agent Framework — and the
+lanes are largely claimed. What is <em>not</em> settled is developer sentiment: the most
+consistent complaint across every 2026 "field guide" is that these frameworks
+over-abstract, hide control flow, and are painful to debug. That complaint is the
+opening glia is built for.</p>
+<h2 id="2-competitive-landscape">2. Competitive landscape<a class="headerlink" href="#2-competitive-landscape" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Lane it owns</th>
+<th>Traction (mid-2026)</th>
+<th>Weakness glia targets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>Controllable, stateful, production orchestration (graph model)</td>
+<td>~34k★, ~38M downloads/mo, v1.0 GA</td>
+<td>Heavy concepts; you debug the framework, not your logic</td>
+</tr>
+<tr>
+<td><strong>CrewAI</strong></td>
+<td>Role-based multi-agent "teams"</td>
+<td>~44.6k★, millions of runs/mo</td>
+<td>Ergonomic but opaque; hard to see/what/why at runtime</td>
+</tr>
+<tr>
+<td><strong>OpenAI Agents SDK</strong></td>
+<td>Fast path inside the OpenAI ecosystem</td>
+<td>~19k★</td>
+<td>Vendor-centric; thin on portability</td>
+</tr>
+<tr>
+<td><strong>Claude Agent SDK</strong></td>
+<td>Batteries-included coding/filesystem agent on Claude</td>
+<td>Anthropic-backed</td>
+<td>A full harness, not a small library to build <em>on</em></td>
+</tr>
+<tr>
+<td><strong>PydanticAI</strong></td>
+<td>Typed Python outputs</td>
+<td>V2 stable</td>
+<td>Great at types; not positioned as a minimal glass-box loop</td>
+</tr>
+<tr>
+<td><strong>Microsoft Agent Framework</strong></td>
+<td>Enterprise (Semantic Kernel + AutoGen merged)</td>
+<td>1.0 (Apr 2026)</td>
+<td>Enterprise weight and surface area</td>
+</tr>
+<tr>
+<td><strong>Mastra / Vercel AI SDK</strong></td>
+<td>TypeScript agents</td>
+<td>Growing fast</td>
+<td>Different runtime; not the Python/ML audience</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Read of the field:</strong> the "controllable production orchestration" slot
+(LangGraph) and the "role-based team" slot (CrewAI) are taken and defended.
+Competing head-on there is a losing game for a new entrant.</p>
+<h2 id="3-the-gap">3. The gap<a class="headerlink" href="#3-the-gap" title="Permanent link">&para;</a></h2>
+<p>Three findings from the 2026 literature point at the same unmet need:</p>
+<ol>
+<li><strong>Over-abstraction is the #1 complaint.</strong> Developers report debugging the
+   framework's internals instead of their own logic; many strip the framework
+   out and call the model API directly to cut latency and regain visibility.</li>
+<li><strong>The modern techniques are known, but scattered.</strong> Context engineering
+   (compaction, trimming), structured outputs, durable execution
+   (checkpoint/replay), guardrails, subagents, and evals-as-tests are the 2026
+   toolkit — but they arrive either baked into a monolith or as separate
+   products to integrate.</li>
+<li><strong>"Read the source" is a real buying criterion now.</strong> After two years of API
+   churn, teams increasingly prefer small libraries they can fully understand
+   over large frameworks they must trust.</li>
+</ol>
+<p><strong>The gap:</strong> a <em>small, transparent, fully-debuggable</em> library that ships the
+modern techniques as <strong>opt-in primitives</strong> rather than a framework you submit to.</p>
+<h2 id="4-positioning">4. Positioning<a class="headerlink" href="#4-positioning" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>glia is the glass-box agent library.</strong> Every model call, tool call, and state
+transition is a plain object you can log, snapshot, and replay. No hidden
+control flow. The whole loop fits in one file you can read in an afternoon.</p>
+</blockquote>
+<p>Analogy: glia aims to be the <strong><code>httpx</code>/<code>FastAPI</code> of agents</strong> — small, typed,
+composable, boring in the best way — not the Django. It competes on
+<em>understandability and control</em>, not on feature count.</p>
+<h3 id="what-glia-deliberately-is-not">What glia deliberately is NOT<a class="headerlink" href="#what-glia-deliberately-is-not" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Not a graph engine (use LangGraph if you want explicit graph orchestration).</li>
+<li>Not a hosted runtime (use the Claude Agent SDK / Managed Agents for that).</li>
+<li>Not a role-play team abstraction (use CrewAI).</li>
+<li>Not a kitchen sink. The core has <strong>zero required dependencies</strong>.</li>
+</ul>
+<h2 id="5-differentiators-the-proof-points">5. Differentiators (the proof points)<a class="headerlink" href="#5-differentiators-the-proof-points" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Transparency.</strong> The agent loop is ~200 readable lines; the entire run state
+   is one serialisable <code>Trajectory</code>. Everything emits an inspectable <code>Event</code>.</li>
+<li><strong>Provider-agnostic, Claude-first.</strong> One ~40-line <code>LLM</code> protocol; a Claude
+   adapter and a deterministic offline adapter both satisfy it. No vendor lock.</li>
+<li><strong>Modern techniques as primitives, not a monolith:</strong> tools from typed
+   functions, structured outputs, <code>SummarizingCompactor</code> / <code>TrimmingCompactor</code>
+   (context engineering), checkpoint/resume (durable execution), guardrails,
+   subagents-as-tools, and an evals-as-tests harness.</li>
+<li><strong>Testable by construction.</strong> The <code>EchoLLM</code> provider makes the full loop
+   run deterministically in CI with no API key and no flakiness — a property
+   most frameworks lack.</li>
+<li><strong>Typed and dependency-light.</strong> Ships <code>py.typed</code>; core installs nothing but
+   the standard library.</li>
+</ol>
+<h2 id="6-target-users">6. Target users<a class="headerlink" href="#6-target-users" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Backend/ML engineers</strong> who want to build an agent without adopting a
+  framework's worldview.</li>
+<li><strong>Teams burned by abstraction churn</strong> who value auditability and control.</li>
+<li><strong>Educators and learners</strong> — the codebase doubles as a readable reference for
+  how a modern agent loop actually works.</li>
+</ul>
+<h2 id="7-go-to-market-open-source">7. Go-to-market (open source)<a class="headerlink" href="#7-go-to-market-open-source" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Lead with the anti-framework message.</strong> README hero: "You can read the
+   whole thing." Show the loop. Show the event stream. Show the offline test.</li>
+<li><strong>Ship credibility signals:</strong> green CI, typed, examples that run offline,
+   an evals suite, a clear architecture doc.</li>
+<li><strong>Content wedge:</strong> short posts that reproduce the exact pain points
+   ("debugging an agent when you can see every step") and a side-by-side with a
+   heavier framework.</li>
+<li><strong>Adjacent-tool interop, not lock-in:</strong> MCP-compatible tool interface;
+   document how glia sits <em>next to</em> LangGraph/CrewAI rather than replacing them.</li>
+</ol>
+<h2 id="8-risks-honest-caveats">8. Risks &amp; honest caveats<a class="headerlink" href="#8-risks-honest-caveats" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Crowded market, discovery is hard.</strong> Mitigation: a sharp, single-sentence
+  wedge and a codebase small enough to evaluate in minutes.</li>
+<li><strong>"Minimal" can read as "toy."</strong> Mitigation: production-relevant primitives
+  (durable execution, evals, guardrails) present from v0.1, with tests.</li>
+<li><strong>Provider drift.</strong> Mitigation: the provider boundary is one tiny protocol;
+  adapting to model/API changes touches ~1 file.</li>
+</ul>
+<h2 id="9-roadmap-headline">9. Roadmap headline<a class="headerlink" href="#9-roadmap-headline" title="Permanent link">&para;</a></h2>
+<p>v0.1 (this release) proves the thesis end-to-end. Next: parallel tool
+execution, streaming token output, an MCP tool bridge, a tracing exporter
+(OpenTelemetry), and a TypeScript port once the Python core stabilises. Full
+detail in <a href="../ROADMAP/">ROADMAP.md</a>.</p>
+<h2 id="sources">Sources<a class="headerlink" href="#sources" title="Permanent link">&para;</a></h2>
+<p>Market research conducted July 2026:</p>
+<ul>
+<li><a href="https://langfuse.com/blog/2025-03-19-ai-agent-comparison">Comparing Open-Source AI Agent Frameworks — Langfuse</a></li>
+<li><a href="https://www.aimagicx.com/blog/best-open-source-ai-agent-frameworks-2026">Best Open-Source AI Agent Frameworks 2026 — AI Magicx</a></li>
+<li><a href="https://www.requesty.ai/blog/best-ai-agent-sdks-compared-2026-langchain-crewai-openai-anthropic-google">Best AI Agent SDKs Compared 2026 — Requesty</a></li>
+<li><a href="https://blog.jetbrains.com/pycharm/2026/06/top-agentic-frameworks-for-building-applications-2026/">Top Agentic Frameworks 2026 — JetBrains</a></li>
+<li><a href="https://www.firecrawl.dev/blog/best-open-source-agent-frameworks">Best open-source frameworks for building AI agents 2026 — Firecrawl</a></li>
+<li><a href="https://www.designveloper.com/blog/is-langchain-bad/">Why Developers Say LangChain Is "Bad" — Designveloper</a></li>
+<li><a href="https://fp8.co/articles/AI-Agent-Frameworks-Complete-Guide-2026">AI Agent Frameworks 2026: Only 2 Production-Ready — fp8.co</a></li>
+<li><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective context engineering for AI agents — Anthropic</a></li>
+<li><a href="https://www.pento.ai/blog/shipping-ai-agents-to-production-recipe-book">Shipping AI Agents to Production: 2026 Context Engineering Recipe Book — Pento</a></li>
+<li><a href="https://mem0.ai/blog/state-of-ai-agent-memory-2026">State of AI Agent Memory 2026 — mem0</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      MIT-licensed · built by Denis Drobyshev
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "navigation.tracking", "content.code.copy", "content.code.annotate", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
