@@ -45,10 +45,13 @@ does, you read `agent.py`. If you want to know what state it holds, you read
 1. **(optional) compact** — if a `Compactor` says the trajectory is too big,
    shrink it first, emitting a `Compacted` event.
 2. **build an `LLMRequest`** from the current trajectory + tool schemas.
-3. **call the provider** (`ModelCall` → `ModelResponse` events), appending the
-   assistant message and its `Usage` to the trajectory.
-4. **if the model asked for tools:** run each (`ToolCalled` → `ToolReturned`),
-   append all results as one user turn, and loop.
+3. **call the provider** (`ModelCall` → `ModelResponse`). When `stream=True` and
+   the provider supports it, text deltas are re-emitted as `ModelDelta` events
+   first. The assistant message and its `Usage` are appended to the trajectory.
+4. **if the model asked for tools:** announce all calls (`ToolCalled`), optionally
+   run each past the `approval` gate (`ApprovalRequested` → `ApprovalResolved`),
+   execute the approved ones — concurrently by default (`asyncio.gather`) —
+   emit `ToolReturned` in call order, append all results as one user turn, loop.
 5. **otherwise:** run output guardrails and finish (`RunFinished`).
 
 `run()` is just `run_events()` drained to completion. That's the whole thing.

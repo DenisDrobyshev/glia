@@ -15,9 +15,11 @@ hidden control flow.** If a feature can't be made inspectable, it doesn't ship.
 - Evals-as-tests harness
 - Zero-dependency core, `py.typed`, green CI, runnable offline examples
 
-## v0.2 — ergonomics & throughput
-- [ ] Parallel tool execution (`asyncio.gather`) with preserved event ordering
-- [ ] Streaming token output through the event stream (`ModelDelta` events)
+## v0.2 — ergonomics & throughput ✅ (shipped)
+- [x] Streaming token output through the event stream (`ModelDelta` events)
+- [x] Parallel tool execution (`asyncio.gather`) with preserved event ordering
+- [x] Human-in-the-loop tool approval as a first-class, inspectable gate
+      _(pulled forward from v0.4)_
 - [ ] Retry/backoff policy as an explicit, inspectable wrapper (not hidden magic)
 - [ ] `RunResult` niceties: per-tool timings, cost summary helpers
 
@@ -29,7 +31,7 @@ hidden control flow.** If a feature can't be made inspectable, it doesn't ship.
 ## v0.4 — reliability
 - [ ] Pluggable persistence backends for checkpoints (file, sqlite, redis)
 - [ ] Deterministic replay: re-run a saved trajectory against a recorded provider
-- [ ] Human-in-the-loop tool approval as a first-class, inspectable gate
+- [x] Human-in-the-loop tool approval as a first-class, inspectable gate _(shipped in v0.2)_
 
 ## Later
 - [ ] TypeScript port once the Python core stabilises (same glass-box contract)

@@ -13,10 +13,11 @@ path is safe.
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from typing import Any
 
 from ..errors import ProviderError
-from ..llm import LLMRequest, LLMResponse
+from ..llm import LLMRequest, LLMResponse, StreamChunk
 from ..types import Block, Message, Text, Thinking, ToolResult, ToolUse, Usage
 
 DEFAULT_MODEL = "claude-opus-4-8"
@@ -53,7 +54,7 @@ class ClaudeLLM:
             self._client = AsyncAnthropic(api_key=self._api_key) if self._api_key else AsyncAnthropic()
         return self._client
 
-    async def generate(self, request: LLMRequest) -> LLMResponse:
+    def _build_kwargs(self, request: LLMRequest) -> dict[str, Any]:
         kwargs: dict[str, Any] = {
             "model": self.model,
             "max_tokens": request.max_tokens,
@@ -76,13 +77,31 @@ class ClaudeLLM:
             kwargs["temperature"] = request.temperature
         if request.stop:
             kwargs["stop_sequences"] = request.stop
+        return kwargs
 
+    async def generate(self, request: LLMRequest) -> LLMResponse:
         try:
-            response = await self.client.messages.create(**kwargs)
+            response = await self.client.messages.create(**self._build_kwargs(request))
         except Exception as exc:  # noqa: BLE001 - normalise to our error boundary
             raise ProviderError(f"Claude request failed: {exc}") from exc
-
         return _response_from_api(response)
+
+    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
+        """Stream text deltas, then a final chunk carrying the full response.
+
+        Uses the SDK's ``messages.stream`` helper; the final chunk's response is
+        assembled from ``get_final_message()``, so it is byte-identical to what
+        ``generate`` would have returned.
+        """
+        final = None
+        try:
+            async with self.client.messages.stream(**self._build_kwargs(request)) as s:
+                async for text in s.text_stream:
+                    yield StreamChunk(text=text)
+                final = await s.get_final_message()
+        except Exception as exc:  # noqa: BLE001
+            raise ProviderError(f"Claude stream failed: {exc}") from exc
+        yield StreamChunk(response=_response_from_api(final))
 
 
 # -- request conversion --------------------------------------------------------

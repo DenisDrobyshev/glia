@@ -9,6 +9,7 @@ provider-agnostic without a plugin system.
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
@@ -68,4 +69,31 @@ class LLM(Protocol):
     """The entire provider contract. Implement this and glia can drive it."""
 
     async def generate(self, request: LLMRequest) -> LLMResponse:  # pragma: no cover - protocol
+        ...
+
+
+@dataclass(frozen=True, slots=True)
+class StreamChunk:
+    """One piece of a streaming response.
+
+    A chunk carries an incremental ``text`` delta, or — on the **final** chunk —
+    the complete :class:`LLMResponse`. A stream is therefore a sequence of text
+    deltas followed by exactly one terminal chunk with ``response`` set.
+    """
+
+    text: str = ""
+    response: LLMResponse | None = None
+
+
+@runtime_checkable
+class StreamingLLM(Protocol):
+    """An optional capability: providers that can stream implement this too.
+
+    The agent uses it only when you ask for streaming *and* the provider
+    supports it; otherwise it falls back to :meth:`LLM.generate`. Streaming is
+    purely a delivery detail — the final :class:`LLMResponse` is identical either
+    way.
+    """
+
+    def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:  # pragma: no cover - protocol
         ...

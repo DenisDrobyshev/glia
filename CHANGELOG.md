@@ -4,6 +4,26 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] — 2026-07-22
+
+Refinements that deepen the glass-box thesis. Every new capability is visible in
+the event stream and off by default.
+
+### Added
+- **Streaming output.** `Agent(..., stream=True)` re-emits provider text deltas
+  as `ModelDelta` events; the buffered `ModelResponse` still follows. New
+  `StreamChunk` type and optional `StreamingLLM` protocol; both `ClaudeLLM`
+  (via `messages.stream`) and `EchoLLM` (deterministic word chunks) implement
+  it. Providers without streaming fall back to `generate` automatically.
+- **Parallel tool execution.** A turn's tool calls run concurrently
+  (`asyncio.gather`) by default (`parallel_tools=True`), with `ToolCalled` /
+  `ToolReturned` events kept in the original call order.
+- **Human-in-the-loop approval.** `approval=<policy>` gates every tool call
+  behind an inspectable verdict (`ApprovalRequested` / `ApprovalResolved`
+  events). Denied calls never execute and return an error result the model can
+  react to. Built-in policies: `approve_all`, `deny_all`, `allow_only`, `deny`,
+  and a reference interactive `prompt_in_terminal`.
+
 ## [0.1.0] — 2026-07-22
 
 Initial release. Proves the glass-box thesis end-to-end.

@@ -96,7 +96,10 @@ await agent.run("follow-up question", trajectory=resumed)   # pick up where you 
 | Primitive | What it gives you |
 |---|---|
 | **Transparent loop** | `agent.run()` / `agent.run_events()` — no hidden control flow |
+| **Streaming** | `Agent(..., stream=True)` — tokens arrive as `ModelDelta` events |
 | **Typed tools** | `@tool` on a plain function; JSON schema derived from type hints |
+| **Parallel tools** | a turn's tool calls run concurrently, results kept in order |
+| **Approval gate** | `approval=...` — an inspectable human-in-the-loop verdict before any tool runs |
 | **Provider boundary** | one ~40-line `LLM` protocol; Claude + offline adapters |
 | **Trajectory** | the full, JSON-serialisable run state and event log |
 | **Structured output** | `generate_structured(...)` → a dataclass / Pydantic model / dict |
@@ -117,6 +120,7 @@ python examples/03_structured_output.py # typed output
 python examples/04_subagents.py         # subagent as a tool
 python examples/05_checkpoint_resume.py # durable execution
 python examples/06_evals.py             # eval suite
+python examples/07_streaming_and_approval.py # streaming + parallel tools + approval gate
 ```
 
 ## Design in one picture
@@ -140,8 +144,10 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.1 — alpha.** The core thesis is proven end-to-end with a full test suite and
-green CI. APIs may still change before 1.0. Feedback and issues welcome.
+**v0.2 — alpha.** The core thesis is proven end-to-end with a full test suite
+(32 offline tests) and green CI. v0.2 adds streaming, parallel tool execution,
+and a human-in-the-loop approval gate. APIs may still change before 1.0.
+Feedback and issues welcome.
 
 ## License
 

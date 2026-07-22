@@ -26,6 +26,16 @@ whole state is in ``trajectory.py``.
 from __future__ import annotations
 
 from .agent import Agent, Hook, RunResult
+from .approval import (
+    ApprovalPolicy,
+    ApprovalRequest,
+    Decision,
+    allow_only,
+    approve_all,
+    deny,
+    deny_all,
+    prompt_in_terminal,
+)
 from .errors import (
     GliaError,
     GuardrailTripped,
@@ -34,14 +44,17 @@ from .errors import (
     StructuredOutputError,
     ToolError,
 )
-from .llm import LLM, LLMRequest, LLMResponse, ToolSchema
+from .llm import LLM, LLMRequest, LLMResponse, StreamChunk, StreamingLLM, ToolSchema
 from .memory import Compactor, SummarizingCompactor, TrimmingCompactor
 from .structured import generate_structured
 from .tools import Tool, ToolRegistry, tool
 from .trajectory import (
+    ApprovalRequested,
+    ApprovalResolved,
     Compacted,
     Event,
     ModelCall,
+    ModelDelta,
     ModelResponse,
     RunFinished,
     RunStarted,
@@ -51,7 +64,7 @@ from .trajectory import (
 )
 from .types import Message, Text, Thinking, ToolResult, ToolUse, Usage, assistant, user
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "__version__",
@@ -66,6 +79,8 @@ __all__ = [
     "LLM",
     "LLMRequest",
     "LLMResponse",
+    "StreamChunk",
+    "StreamingLLM",
     "ToolSchema",
     # trajectory + events
     "Trajectory",
@@ -73,8 +88,11 @@ __all__ = [
     "RunStarted",
     "ModelCall",
     "ModelResponse",
+    "ModelDelta",
     "ToolCalled",
     "ToolReturned",
+    "ApprovalRequested",
+    "ApprovalResolved",
     "Compacted",
     "RunFinished",
     # types
@@ -92,6 +110,15 @@ __all__ = [
     "TrimmingCompactor",
     # structured output
     "generate_structured",
+    # approval (human-in-the-loop)
+    "ApprovalPolicy",
+    "ApprovalRequest",
+    "Decision",
+    "approve_all",
+    "deny_all",
+    "allow_only",
+    "deny",
+    "prompt_in_terminal",
     # errors
     "GliaError",
     "ToolError",

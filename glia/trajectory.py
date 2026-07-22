@@ -77,6 +77,19 @@ class ModelResponse(Event):
 
 
 @dataclass(frozen=True, slots=True)
+class ModelDelta(Event):
+    """An incremental text delta while the model streams. Emitted only when
+    streaming is enabled; the buffered :class:`ModelResponse` still follows."""
+
+    step: int = 0
+    text: str = ""
+    kind: str = "model_delta"
+
+    def _payload(self) -> dict[str, Any]:
+        return {"step": self.step, "text": self.text}
+
+
+@dataclass(frozen=True, slots=True)
 class ToolCalled(Event):
     step: int = 0
     tool_use_id: str = ""
@@ -111,6 +124,46 @@ class ToolReturned(Event):
             "content": self.content,
             "is_error": self.is_error,
             "duration_s": self.duration_s,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class ApprovalRequested(Event):
+    """A tool call is waiting on the approval policy before it may run."""
+
+    step: int = 0
+    tool_use_id: str = ""
+    name: str = ""
+    arguments: dict[str, Any] = field(default_factory=dict)
+    kind: str = "approval_requested"
+
+    def _payload(self) -> dict[str, Any]:
+        return {
+            "step": self.step,
+            "tool_use_id": self.tool_use_id,
+            "name": self.name,
+            "arguments": self.arguments,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class ApprovalResolved(Event):
+    """The approval policy's verdict on a pending tool call."""
+
+    step: int = 0
+    tool_use_id: str = ""
+    name: str = ""
+    allowed: bool = True
+    reason: str = ""
+    kind: str = "approval_resolved"
+
+    def _payload(self) -> dict[str, Any]:
+        return {
+            "step": self.step,
+            "tool_use_id": self.tool_use_id,
+            "name": self.name,
+            "allowed": self.allowed,
+            "reason": self.reason,
         }
 
 
@@ -234,8 +287,11 @@ __all__ = [
     "RunStarted",
     "ModelCall",
     "ModelResponse",
+    "ModelDelta",
     "ToolCalled",
     "ToolReturned",
+    "ApprovalRequested",
+    "ApprovalResolved",
     "Compacted",
     "RunFinished",
     "Trajectory",

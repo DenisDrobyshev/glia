@@ -10,10 +10,11 @@ exactly what the agent sent.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+import re
+from collections.abc import AsyncIterator, Callable
 from typing import Any
 
-from ..llm import LLMRequest, LLMResponse
+from ..llm import LLMRequest, LLMResponse, StreamChunk
 from ..types import Block, Message, Text, ToolUse, Usage
 
 Turn = str | Block | list[Block] | Callable[[LLMRequest], list[Block]]
@@ -53,6 +54,22 @@ class EchoLLM:
             output_tokens=_approx_tokens_blocks(blocks),
         )
         return LLMResponse(message=message, stop_reason=stop_reason, usage=usage, raw=None)
+
+    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
+        """Stream the scripted turn word-by-word, then a final response chunk.
+
+        Deterministic: it computes the exact same response as :meth:`generate`
+        and simply chunks the text, so streaming code paths can be exercised
+        offline with no surprises.
+        """
+        response = await self.generate(request)
+        for piece in _word_chunks(response.message.text()):
+            yield StreamChunk(text=piece)
+        yield StreamChunk(response=response)
+
+
+def _word_chunks(text: str) -> list[str]:
+    return re.findall(r"\S+\s*", text) if text else []
 
 
 # -- helpers for building scripted turns --------------------------------------
