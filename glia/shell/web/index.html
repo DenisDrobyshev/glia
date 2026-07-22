@@ -105,9 +105,10 @@
       <div id="messages" class="messages">
         <div class="empty" id="empty">
           <h2>Talk to glia</h2>
-          <p>Running offline in demo mode — it echoes you back. Add an Anthropic
-          API key in <b>Settings</b> to chat with real Claude and watch tools
-          run in the glass box on the right.</p>
+          <p>Running offline in demo mode — it echoes you back. In <b>Settings</b>,
+          switch to <b>Ollama</b> to run a local model (Qwen, DeepSeek…) for free,
+          or add an Anthropic key for Claude. Watch every step in the glass box
+          on the right.</p>
         </div>
       </div>
       <div class="composer">
@@ -128,23 +129,37 @@
       <h2>Settings</h2>
       <div class="field">
         <label>Model provider</label>
-        <div class="row">
-          <label class="row"><input type="radio" name="mode" value="demo"> Demo (offline echo)</label>
+        <div class="row" style="flex-wrap:wrap">
+          <label class="row"><input type="radio" name="mode" value="demo"> Demo (offline)</label>
+          <label class="row"><input type="radio" name="mode" value="ollama"> Ollama (local)</label>
           <label class="row"><input type="radio" name="mode" value="claude"> Claude</label>
         </div>
       </div>
-      <div class="field">
+      <div class="field" data-mode="claude">
         <label>Anthropic API key</label>
         <input type="password" id="apiKey" placeholder="sk-ant-…  (stored locally, never sent to the UI)">
         <div class="hint" id="keyHint"></div>
       </div>
-      <div class="field">
-        <label>Model</label>
+      <div class="field" data-mode="claude">
+        <label>Claude model</label>
         <select id="model">
           <option>claude-opus-4-8</option>
           <option>claude-sonnet-5</option>
           <option>claude-haiku-4-5</option>
         </select>
+      </div>
+      <div class="field" data-mode="ollama">
+        <label>Ollama host</label>
+        <input type="text" id="ollamaHost" placeholder="http://localhost:11434">
+      </div>
+      <div class="field" data-mode="ollama">
+        <label>Ollama model</label>
+        <input type="text" id="ollamaModel" list="ollamaModels" placeholder="qwen2.5">
+        <datalist id="ollamaModels">
+          <option>qwen2.5</option><option>deepseek-r1</option><option>llama3.2</option>
+          <option>mistral</option><option>phi4</option><option>gemma2</option>
+        </datalist>
+        <div class="hint">Install <b>ollama.com</b>, then <code>ollama pull qwen2.5</code> (or deepseek-r1). Runs fully on your machine.</div>
       </div>
       <div class="field">
         <label>System prompt</label>
@@ -165,16 +180,30 @@ const $ = (id) => document.getElementById(id);
 const messages = $("messages"), events = $("events");
 let sending = false;
 
+const MODE_LABEL = { demo: "demo", claude: "Claude", ollama: "Ollama" };
+
+function updateModeFields() {
+  const sel = document.querySelector('input[name=mode]:checked');
+  const mode = sel ? sel.value : "demo";
+  document.querySelectorAll('.field[data-mode]').forEach(el => {
+    el.style.display = el.getAttribute('data-mode') === mode ? '' : 'none';
+  });
+}
+
 async function loadConfig() {
   const c = await (await fetch("/api/config")).json();
-  $("mode").textContent = c.mode === "claude" ? "Claude" : "demo";
-  $("mode").classList.toggle("live", c.mode === "claude");
+  $("mode").textContent = MODE_LABEL[c.mode] || c.mode;
+  $("mode").classList.toggle("live", c.mode !== "demo");
   document.querySelectorAll('input[name=mode]').forEach(r => r.checked = (r.value === c.mode));
   $("model").value = c.model;
+  $("ollamaHost").value = c.ollama_host || "";
+  $("ollamaModel").value = c.ollama_model || "";
   $("system").value = c.system;
   $("useTools").checked = c.use_tools;
   $("keyHint").textContent = c.has_key ? "A key is saved. Leave blank to keep it." : "No key saved yet.";
+  updateModeFields();
 }
+document.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener("change", updateModeFields));
 
 function clearEmpty() { const e = $("empty"); if (e) e.remove(); }
 
@@ -286,6 +315,7 @@ $("saveSettings").addEventListener("click", async () => {
   const body = {
     mode, model: $("model").value, system: $("system").value,
     use_tools: $("useTools").checked, anthropic_api_key: $("apiKey").value,
+    ollama_host: $("ollamaHost").value, ollama_model: $("ollamaModel").value,
   };
   await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   $("apiKey").value = "";

@@ -13,11 +13,13 @@ from __future__ import annotations
 from typing import Any
 
 from .echo import EchoLLM, call, reply
+from .ollama import OllamaLLM  # stdlib-only, safe to import eagerly
 
-__all__ = ["EchoLLM", "ClaudeLLM", "call", "reply"]
+__all__ = ["EchoLLM", "OllamaLLM", "ClaudeLLM", "call", "reply"]
 
 
 def __getattr__(name: str) -> Any:
+    # ClaudeLLM stays lazy so `import glia` never requires the anthropic package.
     if name == "ClaudeLLM":
         from .anthropic import ClaudeLLM
 

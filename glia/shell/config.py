@@ -28,9 +28,11 @@ def config_path() -> Path:
 
 @dataclass
 class Config:
-    mode: str = "demo"  # "demo" (offline echo) | "claude"
+    mode: str = "demo"  # "demo" (offline echo) | "claude" | "ollama"
     anthropic_api_key: str = ""
     model: str = "claude-opus-4-8"
+    ollama_host: str = "http://localhost:11434"
+    ollama_model: str = "qwen2.5"
     system: str = "You are glia, a helpful and concise assistant."
     use_tools: bool = True
 
@@ -56,6 +58,8 @@ class Config:
         return {
             "mode": self.mode,
             "model": self.model,
+            "ollama_host": self.ollama_host,
+            "ollama_model": self.ollama_model,
             "system": self.system,
             "use_tools": self.use_tools,
             "has_key": bool(self.anthropic_api_key),

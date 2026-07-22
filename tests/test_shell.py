@@ -59,6 +59,22 @@ def test_build_agent_claude_with_key_registers_tools():
     assert len(agent.tools) == 2  # demo tools
 
 
+def test_build_agent_ollama_uses_ollama_provider():
+    agent = build_agent(Config(mode="ollama", ollama_model="deepseek-r1", ollama_host="http://h:1"))
+    assert type(agent.llm).__name__ == "OllamaLLM"
+    assert agent.llm.model == "deepseek-r1"
+    assert agent.llm.host == "http://h:1"
+
+
+def test_config_persists_ollama_fields(tmp_path, monkeypatch):
+    monkeypatch.setattr(config_mod, "config_dir", lambda: tmp_path)
+    Config(mode="ollama", ollama_model="qwen2.5", ollama_host="http://x:11434").save()
+    loaded = Config.load()
+    assert loaded.ollama_model == "qwen2.5"
+    assert loaded.ollama_host == "http://x:11434"
+    assert loaded.public()["ollama_model"] == "qwen2.5"
+
+
 # --- live server --------------------------------------------------------------
 
 

@@ -33,13 +33,20 @@ DEMO_TOOLS = [current_time, word_count]
 
 def build_agent(config: Config, *, stream: bool = True) -> Agent:
     """Assemble the Agent the shell will run for the next turn."""
+    tools = DEMO_TOOLS if config.use_tools else []
+
     if config.mode == "claude" and config.anthropic_api_key:
         from ..providers import ClaudeLLM
 
         llm = ClaudeLLM(model=config.model, api_key=config.anthropic_api_key)
-        tools = DEMO_TOOLS if config.use_tools else []
+        return Agent(llm, tools=tools, system=config.system, stream=stream, name="glia")
+
+    if config.mode == "ollama":
+        from ..providers import OllamaLLM
+
+        llm = OllamaLLM(model=config.ollama_model, host=config.ollama_host)
         return Agent(llm, tools=tools, system=config.system, stream=stream, name="glia")
 
     # Offline demo: an echo bot. It streams your message back so you can try the
-    # UI and watch the event stream without any API key.
+    # UI and watch the event stream without any API key or local server.
     return Agent(EchoLLM(default_reply=None), system=config.system, stream=stream, name="glia")

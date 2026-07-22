@@ -53,12 +53,26 @@ async def search(
 ## Провайдеры
 
 glia общается с моделями через один небольшой протокол `LLM` с единственным
-методом `async generate(request) -> LLMResponse`. Поставляются два адаптера:
+методом `async generate(request) -> LLMResponse`. Поставляются три адаптера:
 
 - **`ClaudeLLM`** — Claude через Anthropic SDK (опциональный extra `[anthropic]`).
+- **`OllamaLLM`** — локальные открытые модели (Qwen, DeepSeek, Llama…) через
+  локальный сервер [Ollama](https://ollama.com). **Без зависимостей** — использует
+  HTTP из стандартной библиотеки. Бесплатно и офлайн.
 - **`EchoLLM`** — детерминированный, офлайн, для тестов и демо.
 
-Свой адаптер — около 40 строк. См. [Архитектуру](ARCHITECTURE.md).
+```python
+from glia import Agent
+from glia.providers import OllamaLLM
+
+# после: `ollama pull qwen2.5` (или `ollama pull deepseek-r1`)
+agent = Agent(OllamaLLM("qwen2.5"), system="Отвечай кратко.")
+result = await agent.run("Поздоровайся.")
+```
+
+`OllamaLLM(model, host="http://localhost:11434")` поддерживает стриминг и вызов
+инструментов для моделей, которые это умеют. Свой адаптер — около 40 строк, см.
+[Архитектуру](ARCHITECTURE.md).
 
 ## Стриминг
 

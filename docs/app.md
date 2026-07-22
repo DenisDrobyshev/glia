@@ -36,6 +36,11 @@ falling back to your browser if a window backend isn't available. Use
 
 - **Works offline out of the box.** In *demo* mode it echoes your messages back,
   so you can try the interface and watch the event stream with zero setup.
+- **Run a local model — free.** In **Settings**, choose **Ollama**, set the model
+  (e.g. `qwen2.5` or `deepseek-r1`) and host, and save. With
+  [Ollama](https://ollama.com) installed and the model pulled
+  (`ollama pull qwen2.5`), everything runs locally on your machine — no key, no
+  network.
 - **Add a key for real Claude.** Open **Settings**, choose **Claude**, paste your
   Anthropic API key (it's stored locally in your config directory and never sent
   back to the UI), pick a model, and save. Now messages go to Claude, and the two

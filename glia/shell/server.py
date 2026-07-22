@@ -104,6 +104,10 @@ def make_handler(state: ShellState) -> type[BaseHTTPRequestHandler]:
                 config.mode = data["mode"]
             if data.get("model"):
                 config.model = data["model"]
+            if data.get("ollama_host"):
+                config.ollama_host = data["ollama_host"]
+            if data.get("ollama_model"):
+                config.ollama_model = data["ollama_model"]
             if "system" in data:
                 config.system = data["system"]
             if "use_tools" in data:

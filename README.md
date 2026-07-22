@@ -102,7 +102,7 @@ await agent.run("follow-up question", trajectory=resumed)   # pick up where you 
 | **Typed tools** | `@tool` on a plain function; JSON schema derived from type hints |
 | **Parallel tools** | a turn's tool calls run concurrently, results kept in order |
 | **Approval gate** | `approval=...` — an inspectable human-in-the-loop verdict before any tool runs |
-| **Provider boundary** | one ~40-line `LLM` protocol; Claude + offline adapters |
+| **Provider boundary** | one ~40-line `LLM` protocol; Claude, local (Ollama), and offline adapters |
 | **Trajectory** | the full, JSON-serialisable run state and event log |
 | **Structured output** | `generate_structured(...)` → a dataclass / Pydantic model / dict |
 | **Context engineering** | `SummarizingCompactor`, `TrimmingCompactor` |
@@ -123,6 +123,7 @@ python examples/04_subagents.py         # subagent as a tool
 python examples/05_checkpoint_resume.py # durable execution
 python examples/06_evals.py             # eval suite
 python examples/07_streaming_and_approval.py # streaming + parallel tools + approval gate
+python examples/08_ollama_local.py           # run a local model (Qwen/DeepSeek) via Ollama
 ```
 
 ## Desktop app
@@ -159,10 +160,11 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.3 — alpha.** The core thesis is proven end-to-end with a full test suite
-(119 offline tests) and green CI. v0.3 adds a downloadable desktop shell; v0.2
-added streaming, parallel tool execution, and a human-in-the-loop approval gate.
-APIs may still change before 1.0. Feedback and issues welcome.
+**v0.4 — alpha.** The core thesis is proven end-to-end with a full test suite
+(129 offline tests) and green CI. v0.4 adds local models via Ollama; v0.3 added a
+downloadable desktop shell; v0.2 added streaming, parallel tool execution, and a
+human-in-the-loop approval gate. APIs may still change before 1.0. Feedback and
+issues welcome.
 
 ## License
 

@@ -4,6 +4,22 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-07-23
+
+### Added
+- **`OllamaLLM` provider** — run local open models (Qwen, DeepSeek, Llama, …)
+  via a local [Ollama](https://ollama.com) server. Free, offline, no API key.
+  - **Zero dependencies:** talks to `/api/chat` over stdlib HTTP (`urllib`),
+    with async streaming via a background reader thread.
+  - Supports streaming and tool calling for models that offer it; maps glia
+    messages/tool-results to Ollama's format and back.
+  - Exported as `glia.providers.OllamaLLM` (eager import — no vendor SDK).
+- **Ollama mode in the desktop shell** — a third provider option in Settings
+  (host + model, with a datalist of common models), so the shell can drive a
+  local model. New config fields `ollama_host` / `ollama_model`.
+- Example `08_ollama_local.py`; Ollama documented in the Guide and Desktop app
+  pages (EN + RU).
+
 ## [0.3.0] — 2026-07-23
 
 ### Added

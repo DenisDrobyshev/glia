@@ -51,12 +51,26 @@ result the model can see and recover from — it never crashes the loop.
 ## Providers
 
 glia talks to models through one small protocol, `LLM`, with a single
-`async generate(request) -> LLMResponse` method. Two adapters ship:
+`async generate(request) -> LLMResponse` method. Three adapters ship:
 
 - **`ClaudeLLM`** — Claude via the Anthropic SDK (optional `[anthropic]` extra).
+- **`OllamaLLM`** — local open models (Qwen, DeepSeek, Llama…) via a local
+  [Ollama](https://ollama.com) server. **Zero dependencies** — it uses stdlib
+  HTTP. Free and offline.
 - **`EchoLLM`** — deterministic, offline, for tests and demos.
 
-Writing your own is ~40 lines. See [Architecture](ARCHITECTURE.md).
+```python
+from glia import Agent
+from glia.providers import OllamaLLM
+
+# after: `ollama pull qwen2.5` (or `ollama pull deepseek-r1`)
+agent = Agent(OllamaLLM("qwen2.5"), system="Be concise.")
+result = await agent.run("Say hello.")
+```
+
+`OllamaLLM(model, host="http://localhost:11434")` supports streaming and tool
+calling for models that offer it. Writing your own adapter is ~40 lines — see
+[Architecture](ARCHITECTURE.md).
 
 ## Streaming
 
