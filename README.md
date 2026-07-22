@@ -35,11 +35,13 @@ See [docs/STRATEGY.md](docs/STRATEGY.md) for the full market analysis.
 ## Install
 
 ```bash
-pip install glia                 # core — no dependencies
-pip install "glia[anthropic]"    # + the Claude provider
+pip install glia-agents               # core — no dependencies
+pip install "glia-agents[anthropic]"  # + the Claude provider
 ```
 
-> Not yet on PyPI. For now: `git clone` and `pip install -e ".[anthropic,dev]"`.
+> The distribution is `glia-agents` (the bare name `glia` was taken on PyPI);
+> the import stays `import glia`. For development: `git clone` then
+> `pip install -e ".[anthropic,dev]"`.
 
 ## 30-second tour
 
