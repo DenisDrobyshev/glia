@@ -14,7 +14,10 @@ afternoon.
 [![CI](https://github.com/DenisDrobyshev/glia/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/glia/actions/workflows/ci.yml)
 &nbsp;Python 3.10+ &nbsp;·&nbsp; MIT &nbsp;·&nbsp; zero required dependencies &nbsp;·&nbsp; typed
 
-![The glia desktop shell — a chat on the left, a live glass-box event panel on the right](docs/assets/hero.svg)
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="The glia desktop shell — a chat on the left, a live glass-box event panel on the right (animated)" width="820">
+  <br><sub>The desktop shell — streaming reply on the left, the live glass box on the right. <i>(Animated SVG; it plays in your browser.)</i></sub>
+</p>
 
 ---
 
@@ -114,6 +117,7 @@ await agent.run("follow-up question", trajectory=resumed)   # pick up where you 
 | **Subagents** | `agent.as_tool(...)` — any agent becomes a tool |
 | **Evals-as-tests** | a pytest-style regression harness for agent behaviour |
 | **Record & replay** | record real provider responses once, replay deterministically offline (VCR-style) |
+| **OpenTelemetry** | `OTelExporter` hook turns the event stream into spans (`[otel]` extra) |
 
 ## Examples
 
@@ -165,12 +169,13 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.6 — alpha.** The core thesis is proven end-to-end with a full test suite
-(159 offline tests, ~95% coverage) and green CI (ruff + **mypy** + tests). v0.6
-adds record/replay cassettes; v0.5 an OpenAI provider, interactive tool approval
-in the shell, and an MCP bridge; v0.4 local models via Ollama; v0.3 a
-downloadable desktop shell; v0.2 streaming, parallel tools, and the approval
-gate. APIs may still change before 1.0. Feedback and issues welcome.
+**v0.7 — alpha.** The core thesis is proven end-to-end with a full test suite
+(163 offline tests, ~95% coverage) and green CI (ruff + **mypy** + tests). v0.7
+adds an OpenTelemetry exporter and a redesigned shell UI; v0.6 record/replay
+cassettes; v0.5 an OpenAI provider, interactive tool approval, and an MCP bridge;
+v0.4 local models via Ollama; v0.3 a downloadable desktop shell; v0.2 streaming,
+parallel tools, and the approval gate. APIs may still change before 1.0.
+Feedback and issues welcome.
 
 ## License
 

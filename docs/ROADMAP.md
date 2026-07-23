@@ -15,10 +15,13 @@ hidden control flow.** If a feature can't be made inspectable, it doesn't ship.
 - Evals-as-tests harness
 - Zero-dependency core, `py.typed`, green CI, runnable offline examples
 
+## v0.7 — observability & polish ✅ (shipped)
+- [x] OpenTelemetry span exporter driven off the event stream
+- [x] Redesigned desktop shell UI + an animated README hero
+- [ ] A local trace viewer for saved trajectories
+
 ## v0.6 — record & replay ✅ (shipped)
 - [x] Record/replay cassettes (`RecordingLLM` / `ReplayLLM` / `use_cassette`)
-- [ ] OpenTelemetry span exporter driven off the event stream
-- [ ] A local trace viewer for saved trajectories
 
 ## v0.5 — reach & rigor ✅ (shipped)
 - [x] `OpenAILLM` provider (OpenAI-compatible; streaming + tools)

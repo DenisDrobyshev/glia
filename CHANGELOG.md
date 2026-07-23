@@ -4,6 +4,25 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] — 2026-07-23
+
+### Added
+- **OpenTelemetry exporter** (`glia.integrations.otel.OTelExporter`) — a hook
+  that turns the event stream into spans: a root `glia.run` span with child
+  `glia.model_call` and `glia.tool` spans (model/token/stop-reason attributes,
+  tool errors marked; approvals and compaction as span events). Works with the
+  real OTel API (`[otel]` extra) and is fully testable via a fake tracer; never
+  raises into a run.
+
+### Changed
+- **Redesigned the desktop shell UI** — a warmer, cleaner palette, refined
+  typography and spacing, softer message bubbles with entrance animations, a
+  polished glass-box panel (colored event dots, pulsing live indicator), and a
+  nicer composer. All existing behaviour preserved.
+- **Animated hero** — the README/docs hero is now an animated SVG that plays the
+  shell in action (streaming reply + glass box filling in), degrading gracefully
+  to a full static frame where SVG animation isn't run.
+
 ## [0.6.0] — 2026-07-23
 
 ### Added

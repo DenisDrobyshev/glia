@@ -285,3 +285,20 @@ def log(event):
 
 agent = Agent(llm, hooks=[log])
 ```
+
+### OpenTelemetry
+
+`OTelExporter` — это hook, превращающий поток событий в спаны: корневой спан
+`glia.run` с дочерними `glia.model_call` и `glia.tool`, с атрибутами модели,
+токенов и причины остановки (ошибки инструментов помечаются; подтверждения и
+компакция становятся событиями спана). Установите
+`pip install "glia-agents[otel]"`, настройте трейсер как обычно и добавьте hook:
+
+```python
+from glia.integrations.otel import OTelExporter
+
+agent = Agent(llm, tools=[...], hooks=[OTelExporter()])  # использует глобальный трейсер
+```
+
+Он синхронный и никогда не бросает исключение в ваш ран — сбои телеметрии
+подавляются, чтобы не сломать агента.

@@ -277,3 +277,20 @@ def log(event):
 
 agent = Agent(llm, hooks=[log])
 ```
+
+### OpenTelemetry
+
+`OTelExporter` is a hook that turns the event stream into spans: a root
+`glia.run` span with child `glia.model_call` and `glia.tool` spans, carrying
+model, token, and stop-reason attributes and marking tool errors (approvals and
+compaction become span events). Install `pip install "glia-agents[otel]"`,
+configure a tracer as usual, and add the hook:
+
+```python
+from glia.integrations.otel import OTelExporter
+
+agent = Agent(llm, tools=[...], hooks=[OTelExporter()])  # uses the global tracer
+```
+
+It's synchronous and never raises into your run — telemetry failures are
+swallowed so they can't break the agent.
