@@ -14,8 +14,9 @@ from typing import Any
 
 from .echo import EchoLLM, call, reply
 from .ollama import OllamaLLM  # stdlib-only, safe to import eagerly
+from .openai import OpenAILLM  # stdlib-only, safe to import eagerly
 
-__all__ = ["EchoLLM", "OllamaLLM", "ClaudeLLM", "call", "reply"]
+__all__ = ["EchoLLM", "OllamaLLM", "OpenAILLM", "ClaudeLLM", "call", "reply"]
 
 
 def __getattr__(name: str) -> Any:

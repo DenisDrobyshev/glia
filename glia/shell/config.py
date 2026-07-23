@@ -28,13 +28,17 @@ def config_path() -> Path:
 
 @dataclass
 class Config:
-    mode: str = "demo"  # "demo" (offline echo) | "claude" | "ollama"
+    mode: str = "demo"  # "demo" (offline echo) | "claude" | "ollama" | "openai"
     anthropic_api_key: str = ""
     model: str = "claude-opus-4-8"
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5"
+    openai_api_key: str = ""
+    openai_base_url: str = "https://api.openai.com/v1"
+    openai_model: str = "gpt-4o-mini"
     system: str = "You are glia, a helpful and concise assistant."
     use_tools: bool = True
+    approve_tools: bool = False  # ask before running each tool
 
     @classmethod
     def load(cls) -> Config:
@@ -54,13 +58,17 @@ class Config:
         config_path().write_text(json.dumps(asdict(self), indent=2), "utf-8")
 
     def public(self) -> dict:
-        """A UI-safe view — the raw key is never exposed."""
+        """A UI-safe view — raw keys are never exposed."""
         return {
             "mode": self.mode,
             "model": self.model,
             "ollama_host": self.ollama_host,
             "ollama_model": self.ollama_model,
+            "openai_base_url": self.openai_base_url,
+            "openai_model": self.openai_model,
             "system": self.system,
             "use_tools": self.use_tools,
+            "approve_tools": self.approve_tools,
             "has_key": bool(self.anthropic_api_key),
+            "has_openai_key": bool(self.openai_api_key),
         }

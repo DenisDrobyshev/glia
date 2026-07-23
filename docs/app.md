@@ -4,7 +4,7 @@ glia ships a small **graphical shell** — a chat window that also shows the liv
 glass box (streaming tokens, tool calls, approvals) as it happens. It runs a real
 `glia.Agent` under the hood, so it doubles as a demo of the library.
 
-![the glia shell: a chat on the left, a live event panel on the right]
+![glia shell — a chat on the left, a live glass-box event panel on the right](assets/hero.svg)
 
 ## Two ways to get it
 

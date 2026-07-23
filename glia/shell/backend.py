@@ -31,21 +31,26 @@ async def word_count(text: str) -> str:
 DEMO_TOOLS = [current_time, word_count]
 
 
-def build_agent(config: Config, *, stream: bool = True) -> Agent:
+def build_agent(config: Config, *, stream: bool = True, approval=None) -> Agent:
     """Assemble the Agent the shell will run for the next turn."""
     tools = DEMO_TOOLS if config.use_tools else []
+    common = {"tools": tools, "system": config.system, "stream": stream, "approval": approval, "name": "glia"}
 
     if config.mode == "claude" and config.anthropic_api_key:
         from ..providers import ClaudeLLM
 
-        llm = ClaudeLLM(model=config.model, api_key=config.anthropic_api_key)
-        return Agent(llm, tools=tools, system=config.system, stream=stream, name="glia")
+        return Agent(ClaudeLLM(model=config.model, api_key=config.anthropic_api_key), **common)
 
     if config.mode == "ollama":
         from ..providers import OllamaLLM
 
-        llm = OllamaLLM(model=config.ollama_model, host=config.ollama_host)
-        return Agent(llm, tools=tools, system=config.system, stream=stream, name="glia")
+        return Agent(OllamaLLM(model=config.ollama_model, host=config.ollama_host), **common)
+
+    if config.mode == "openai" and config.openai_api_key:
+        from ..providers import OpenAILLM
+
+        llm = OpenAILLM(model=config.openai_model, api_key=config.openai_api_key, base_url=config.openai_base_url)
+        return Agent(llm, **common)
 
     # Offline demo: an echo bot. It streams your message back so you can try the
     # UI and watch the event stream without any API key or local server.

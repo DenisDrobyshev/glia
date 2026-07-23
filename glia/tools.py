@@ -147,7 +147,9 @@ def _type_to_schema(annotation: Any) -> dict[str, Any]:
 
     if origin is typing.Literal:
         options = list(get_args(annotation))
-        scalar = type(options[0]) if options else str
+        scalar: type = str
+        if options:
+            scalar = type(options[0])
         return {"type": _JSON_SCALARS.get(scalar, "string"), "enum": options}
 
     # Optional[T] / Union[T, None] / PEP 604 `T | None` -> schema of T (JSON

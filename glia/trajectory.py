@@ -271,6 +271,7 @@ class Trajectory:
 class _LoadedEvent(Event):
     """A previously-serialised event, rehydrated as an opaque record."""
 
+    _raw: dict[str, Any]
     __slots__ = ("_raw",)
 
     def __init__(self, raw: dict[str, Any]) -> None:

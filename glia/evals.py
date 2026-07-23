@@ -129,7 +129,8 @@ def used_tool(name: str) -> Check:
 def did_not_error(result: RunResult) -> None:
     """A check (not a factory): no tool returned an error."""
     errored = [
-        e.name for e in result.trajectory.events_of("tool_returned") if getattr(e, "is_error", False)
+        getattr(e, "name", "?") for e in result.trajectory.events_of("tool_returned")
+        if getattr(e, "is_error", False)
     ]
     assert not errored, f"tools errored: {errored}"
 

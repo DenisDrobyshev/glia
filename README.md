@@ -14,6 +14,8 @@ afternoon.
 [![CI](https://github.com/DenisDrobyshev/glia/actions/workflows/ci.yml/badge.svg)](https://github.com/DenisDrobyshev/glia/actions/workflows/ci.yml)
 &nbsp;Python 3.10+ &nbsp;·&nbsp; MIT &nbsp;·&nbsp; zero required dependencies &nbsp;·&nbsp; typed
 
+![The glia desktop shell — a chat on the left, a live glass-box event panel on the right](docs/assets/hero.svg)
+
 ---
 
 ## Why another agent library?
@@ -102,7 +104,8 @@ await agent.run("follow-up question", trajectory=resumed)   # pick up where you 
 | **Typed tools** | `@tool` on a plain function; JSON schema derived from type hints |
 | **Parallel tools** | a turn's tool calls run concurrently, results kept in order |
 | **Approval gate** | `approval=...` — an inspectable human-in-the-loop verdict before any tool runs |
-| **Provider boundary** | one ~40-line `LLM` protocol; Claude, local (Ollama), and offline adapters |
+| **Provider boundary** | one ~40-line `LLM` protocol; Claude, OpenAI, local (Ollama), and offline adapters |
+| **MCP tools** | use any Model Context Protocol server's tools as glia tools (`[mcp]` extra) |
 | **Trajectory** | the full, JSON-serialisable run state and event log |
 | **Structured output** | `generate_structured(...)` → a dataclass / Pydantic model / dict |
 | **Context engineering** | `SummarizingCompactor`, `TrimmingCompactor` |
@@ -160,11 +163,12 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.4 — alpha.** The core thesis is proven end-to-end with a full test suite
-(129 offline tests) and green CI. v0.4 adds local models via Ollama; v0.3 added a
-downloadable desktop shell; v0.2 added streaming, parallel tool execution, and a
-human-in-the-loop approval gate. APIs may still change before 1.0. Feedback and
-issues welcome.
+**v0.5 — alpha.** The core thesis is proven end-to-end with a full test suite
+(151 offline tests, ~95% coverage) and green CI (ruff + **mypy** + tests). v0.5
+adds an OpenAI provider, interactive tool approval in the desktop shell, and an
+MCP tool bridge; v0.4 added local models via Ollama; v0.3 a downloadable desktop
+shell; v0.2 streaming, parallel tools, and the approval gate. APIs may still
+change before 1.0. Feedback and issues welcome.
 
 ## License
 

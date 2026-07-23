@@ -4,6 +4,27 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-07-23
+
+### Added
+- **`OpenAILLM` provider** — OpenAI or any OpenAI-compatible endpoint (Groq,
+  Together, OpenRouter, local vLLM, …) via a `base_url`. Zero dependencies
+  (stdlib HTTP), streaming + tool calling. glia now has four real providers.
+- **Interactive approval in the desktop shell** — with the new "Ask before
+  running each tool" setting, the shell shows an Approve/Deny prompt in the
+  window and the run parks until you decide (resolved over a new `/api/approve`
+  endpoint). Also adds **OpenAI** as a fourth shell provider mode.
+- **MCP tool bridge** (`glia.integrations.mcp`) — use any Model Context Protocol
+  server's tools as glia tools. Dependency-free adapter (`tools_from_mcp`) plus
+  `mcp_stdio_tools` / `mcp_http_tools` connectors behind the `[mcp]` extra.
+- A hero image (`docs/assets/hero.svg`) in the README and docs.
+
+### Quality
+- **mypy is now a CI gate** (`python -m mypy glia` runs in CI); fixed the few
+  type issues it surfaced.
+- Test suite grown to **151 offline tests, ~95% coverage** (adds OpenAI, MCP,
+  interactive-approval, and shell-launch coverage). Fixed a race in `/api/quit`.
+
 ## [0.4.0] — 2026-07-23
 
 ### Added

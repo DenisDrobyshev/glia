@@ -51,12 +51,13 @@ result the model can see and recover from — it never crashes the loop.
 ## Providers
 
 glia talks to models through one small protocol, `LLM`, with a single
-`async generate(request) -> LLMResponse` method. Three adapters ship:
+`async generate(request) -> LLMResponse` method. Four adapters ship:
 
 - **`ClaudeLLM`** — Claude via the Anthropic SDK (optional `[anthropic]` extra).
+- **`OpenAILLM`** — OpenAI **or any OpenAI-compatible endpoint** (Groq, Together,
+  OpenRouter, a local vLLM…) via a `base_url`. **Zero dependencies** — stdlib HTTP.
 - **`OllamaLLM`** — local open models (Qwen, DeepSeek, Llama…) via a local
-  [Ollama](https://ollama.com) server. **Zero dependencies** — it uses stdlib
-  HTTP. Free and offline.
+  [Ollama](https://ollama.com) server. **Zero dependencies**. Free and offline.
 - **`EchoLLM`** — deterministic, offline, for tests and demos.
 
 ```python
@@ -208,6 +209,24 @@ Any agent can be exposed as a tool another agent calls — the whole of
 researcher = Agent(llm, tools=[web_search], name="researcher")
 lead = Agent(llm, tools=[researcher.as_tool("research", "Look things up online")])
 ```
+
+## MCP tools
+
+Use any [Model Context Protocol](https://modelcontextprotocol.io) server's tools
+as glia tools. Install the optional extra (`pip install "glia-agents[mcp]"`) and
+open a session — the tools are live for the duration of the `async with` block:
+
+```python
+from glia import Agent
+from glia.integrations.mcp import mcp_stdio_tools
+
+async with mcp_stdio_tools("npx", ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]) as tools:
+    agent = Agent(llm, tools=tools)
+    await agent.run("List the files in /tmp")
+```
+
+`mcp_http_tools(url)` connects over Streamable HTTP instead. The adapter itself
+(`tools_from_mcp`) is dependency-free, so it's easy to test.
 
 ## Evals as tests
 

@@ -15,10 +15,16 @@ hidden control flow.** If a feature can't be made inspectable, it doesn't ship.
 - Evals-as-tests harness
 - Zero-dependency core, `py.typed`, green CI, runnable offline examples
 
+## v0.5 — reach & rigor ✅ (shipped)
+- [x] `OpenAILLM` provider (OpenAI-compatible; streaming + tools)
+- [x] Interactive approval UI in the desktop shell (approve/deny from the window)
+- [x] MCP tool bridge (`glia.integrations.mcp`, `[mcp]` extra)
+- [x] mypy as a CI gate; coverage restored to ~95%; README hero image
+
 ## v0.4 — local models ✅ (shipped)
 - [x] `OllamaLLM` provider (stdlib HTTP, streaming + tools) for local open models
 - [x] Ollama mode in the desktop shell (Qwen, DeepSeek, Llama, …)
-- [ ] A second hosted provider (OpenAI) to further prove provider-agnosticism
+- [x] A second hosted provider (OpenAI) — shipped in v0.5
 
 ## v0.3 — the desktop shell ✅ (shipped)
 - [x] `glia-shell` graphical chat app with a live glass-box event panel

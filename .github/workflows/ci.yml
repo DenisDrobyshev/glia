@@ -29,6 +29,9 @@ jobs:
       - name: Lint (ruff)
         run: python -m ruff check .
 
+      - name: Types (mypy)
+        run: python -m mypy glia
+
       - name: Tests (pytest, fully offline) + coverage gate
         run: python -m pytest -q --cov=glia --cov-report=term-missing --cov-fail-under=90
 

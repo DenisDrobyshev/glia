@@ -67,7 +67,7 @@ class ClaudeLLM:
                 {"name": t.name, "description": t.description, "input_schema": t.parameters}
                 for t in request.tools
             ]
-            if request.tool_choice not in (None, "auto"):
+            if request.tool_choice and request.tool_choice != "auto":
                 kwargs["tool_choice"] = _tool_choice(request.tool_choice)
         if request.thinking:
             kwargs["thinking"] = {"type": "adaptive", "display": self.thinking_display}

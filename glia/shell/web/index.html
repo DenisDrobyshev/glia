@@ -51,6 +51,9 @@
   .msg.user { align-self: flex-end; background: var(--user); color: var(--user-ink); border-bottom-right-radius: 4px; }
   .msg.bot { align-self: flex-start; background: var(--bot); color: var(--bot-ink); border-bottom-left-radius: 4px; }
   .msg.err { align-self: flex-start; background: transparent; color: var(--err); border: 1px dashed var(--err); }
+  .msg.approval { align-self: flex-start; background: var(--panel); color: var(--ink); border: 1px solid var(--accent); }
+  .approval-actions { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .approval-actions .verdict { color: var(--muted); font-size: 13px; }
   .msg .cursor { animation: blink 1s steps(2) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
   .empty { color: var(--muted); text-align: center; margin: auto; max-width: 420px; }
@@ -133,6 +136,7 @@
           <label class="row"><input type="radio" name="mode" value="demo"> Demo (offline)</label>
           <label class="row"><input type="radio" name="mode" value="ollama"> Ollama (local)</label>
           <label class="row"><input type="radio" name="mode" value="claude"> Claude</label>
+          <label class="row"><input type="radio" name="mode" value="openai"> OpenAI</label>
         </div>
       </div>
       <div class="field" data-mode="claude">
@@ -161,12 +165,31 @@
         </datalist>
         <div class="hint">Install <b>ollama.com</b>, then <code>ollama pull qwen2.5</code> (or deepseek-r1). Runs fully on your machine.</div>
       </div>
+      <div class="field" data-mode="openai">
+        <label>OpenAI API key</label>
+        <input type="password" id="openaiKey" placeholder="sk-…  (stored locally, never sent to the UI)">
+        <div class="hint" id="openaiKeyHint"></div>
+      </div>
+      <div class="field" data-mode="openai">
+        <label>Model</label>
+        <input type="text" id="openaiModel" list="openaiModels" placeholder="gpt-4o-mini">
+        <datalist id="openaiModels">
+          <option>gpt-4o-mini</option><option>gpt-4o</option><option>o4-mini</option><option>gpt-4.1-mini</option>
+        </datalist>
+      </div>
+      <div class="field" data-mode="openai">
+        <label>Base URL <span style="opacity:.6">(any OpenAI-compatible endpoint)</span></label>
+        <input type="text" id="openaiBase" placeholder="https://api.openai.com/v1">
+      </div>
       <div class="field">
         <label>System prompt</label>
         <textarea id="system" rows="2"></textarea>
       </div>
       <div class="field row">
         <input type="checkbox" id="useTools"> <label for="useTools" style="margin:0">Enable demo tools (current_time, word_count)</label>
+      </div>
+      <div class="field row">
+        <input type="checkbox" id="approveTools"> <label for="approveTools" style="margin:0">Ask before running each tool (approval gate)</label>
       </div>
       <div class="actions">
         <button id="closeSettings">Cancel</button>
@@ -180,7 +203,7 @@ const $ = (id) => document.getElementById(id);
 const messages = $("messages"), events = $("events");
 let sending = false;
 
-const MODE_LABEL = { demo: "demo", claude: "Claude", ollama: "Ollama" };
+const MODE_LABEL = { demo: "demo", claude: "Claude", ollama: "Ollama", openai: "OpenAI" };
 
 function updateModeFields() {
   const sel = document.querySelector('input[name=mode]:checked');
@@ -198,8 +221,12 @@ async function loadConfig() {
   $("model").value = c.model;
   $("ollamaHost").value = c.ollama_host || "";
   $("ollamaModel").value = c.ollama_model || "";
+  $("openaiModel").value = c.openai_model || "";
+  $("openaiBase").value = c.openai_base_url || "";
+  $("openaiKeyHint").textContent = c.has_openai_key ? "A key is saved. Leave blank to keep it." : "No key saved yet.";
   $("system").value = c.system;
   $("useTools").checked = c.use_tools;
+  $("approveTools").checked = c.approve_tools;
   $("keyHint").textContent = c.has_key ? "A key is saved. Leave blank to keep it." : "No key saved yet.";
   updateModeFields();
 }
@@ -224,6 +251,28 @@ function addEvent(kind, detail, cls) {
 
 function esc(s) { return (s ?? "").toString().replace(/[<&]/g, c => ({'<':'&lt;','&':'&amp;'}[c])); }
 
+function renderApproval(ev) {
+  clearEmpty();
+  const box = document.createElement("div");
+  box.className = "msg bot approval";
+  box.innerHTML = `<div>Approve tool <b>${esc(ev.name)}</b>(<code>${esc(JSON.stringify(ev.arguments))}</code>)?</div>`;
+  const row = document.createElement("div"); row.className = "approval-actions";
+  const yes = document.createElement("button"); yes.className = "primary"; yes.textContent = "Approve";
+  const no = document.createElement("button"); no.textContent = "Deny";
+  const decide = (allow) => {
+    yes.disabled = no.disabled = true;
+    fetch("/api/approve", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tool_use_id: ev.tool_use_id, allow }) });
+    const v = document.createElement("span");
+    v.className = "verdict"; v.textContent = allow ? " ✓ approved" : " ✗ denied";
+    row.appendChild(v);
+  };
+  yes.onclick = () => decide(true);
+  no.onclick = () => decide(false);
+  row.appendChild(yes); row.appendChild(no); box.appendChild(row);
+  messages.appendChild(box); messages.scrollTop = messages.scrollHeight;
+}
+
 function handleEvent(ev, bubble) {
   switch (ev.kind) {
     case "model_call": addEvent("model_call", "step " + ev.step, "model"); break;
@@ -237,7 +286,7 @@ function handleEvent(ev, bubble) {
     case "tool_called": addEvent("tool", ev.name + "(" + esc(JSON.stringify(ev.arguments)) + ")", "tool"); break;
     case "tool_returned":
       addEvent("tool_result", esc(ev.name) + " → " + esc(ev.content), ev.is_error ? "err" : "tool_res"); break;
-    case "approval_requested": addEvent("approval?", esc(ev.name), "model"); break;
+    case "approval_requested": addEvent("approval?", esc(ev.name), "model"); renderApproval(ev); break;
     case "approval_resolved":
       addEvent(ev.allowed ? "approved" : "denied", esc(ev.name) + (ev.reason ? " — " + esc(ev.reason) : ""),
                ev.allowed ? "approve_yes" : "approve_no"); break;
@@ -314,11 +363,14 @@ $("saveSettings").addEventListener("click", async () => {
   const mode = document.querySelector('input[name=mode]:checked').value;
   const body = {
     mode, model: $("model").value, system: $("system").value,
-    use_tools: $("useTools").checked, anthropic_api_key: $("apiKey").value,
+    use_tools: $("useTools").checked, approve_tools: $("approveTools").checked,
+    anthropic_api_key: $("apiKey").value,
     ollama_host: $("ollamaHost").value, ollama_model: $("ollamaModel").value,
+    openai_api_key: $("openaiKey").value, openai_base_url: $("openaiBase").value,
+    openai_model: $("openaiModel").value,
   };
   await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  $("apiKey").value = "";
+  $("apiKey").value = ""; $("openaiKey").value = "";
   $("modalBg").classList.remove("show");
   loadConfig();
 });
