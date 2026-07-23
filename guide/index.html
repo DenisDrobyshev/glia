@@ -549,6 +549,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#record-replay-cassettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Record &amp; replay (cassettes)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#observability-with-hooks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -845,6 +856,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#record-replay-cassettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Record &amp; replay (cassettes)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#observability-with-hooks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1062,13 +1084,30 @@ CI, gating deploys.</p>
 <a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">report</span> <span class="o">=</span> <span class="k">await</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">suite</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">add</span><span class="p">]))</span>
 <a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">assert</span> <span class="n">report</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="n">report</span>
 </code></pre></div>
+<h2 id="record-replay-cassettes">Record &amp; replay (cassettes)<a class="headerlink" href="#record-replay-cassettes" title="Permanent link">&para;</a></h2>
+<p>Record a real provider's responses once, then replay them deterministically with
+no network and no API key — VCR for the <code>LLM</code> protocol. A cassette is a readable
+JSON file you can commit alongside your tests.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">use_cassette</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClaudeLLM</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># First run records (needs a key); later runs replay offline — identical output.</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">use_cassette</span><span class="p">(</span><span class="s2">&quot;tests/cassettes/weather.json&quot;</span><span class="p">,</span> <span class="n">ClaudeLLM</span><span class="p">)</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">get_weather</span><span class="p">])</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;What&#39;s the weather in Paris?&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><code>use_cassette</code> records if the file is missing and replays if it exists (force
+with <code>mode="record"</code> / <code>"replay"</code>). Under the hood it's <code>RecordingLLM</code> (wraps a
+real provider, writes the cassette) and <code>ReplayLLM</code> (serves recorded responses,
+matching each request by key with an ordered fallback). Streaming is supported
+in both directions.</p>
 <h2 id="observability-with-hooks">Observability with hooks<a class="headerlink" href="#observability-with-hooks" title="Permanent link">&para;</a></h2>
 <p>A hook is any callable that receives each <code>Event</code> (sync or async). Every event
 flows through it — log it, trace it, or drive a UI.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="p">[</span><span class="n">log</span><span class="p">])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="p">[</span><span class="n">log</span><span class="p">])</span>
 </code></pre></div>
 
 
