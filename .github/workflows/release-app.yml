@@ -7,6 +7,9 @@ name: Build desktop app
 # The binaries run in browser mode (the server is pure stdlib, so no native GUI
 # backend is bundled — rock-solid across platforms). `pip install glia-agents[shell]`
 # is the path to the native window via pywebview.
+#
+# The matrix jobs only upload artifacts; a single `attach` job then adds them to
+# the release in one call — so concurrent uploads can't race and drop an asset.
 
 on:
   release:
@@ -60,14 +63,25 @@ jobs:
         shell: bash
         run: cp "${{ matrix.bin }}" "${{ matrix.asset }}"
 
-      - name: Upload workflow artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset }}
           path: ${{ matrix.asset }}
 
+  attach:
+    # One job attaches every binary at once, so concurrent uploads can't drop one.
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: bins
+          merge-multiple: true
+
       - name: Attach to release
-        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ matrix.asset }}
+          files: bins/*
