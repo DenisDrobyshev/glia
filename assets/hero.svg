@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <defs>
+    <clipPath id="win"><rect x="20" y="20" width="1160" height="680" rx="14"/></clipPath>
+  </defs>
+  <rect width="1200" height="720" fill="#e9ecec"/>
+  <!-- window -->
+  <g clip-path="url(#win)">
+    <rect x="20" y="20" width="1160" height="680" fill="#f7f8f8"/>
+    <!-- header -->
+    <rect x="20" y="20" width="1160" height="52" fill="#ffffff"/>
+    <line x1="20" y1="72" x2="1180" y2="72" stroke="#e3e8e7"/>
+    <text x="44" y="52" font-size="20" font-weight="700" fill="#16201f">glia <tspan font-size="13" font-weight="500" fill="#6b7a78">shell</tspan></text>
+    <rect x="132" y="36" width="66" height="22" rx="11" fill="#0d9488"/>
+    <text x="165" y="51" font-size="12" fill="#ffffff" text-anchor="middle">Claude</text>
+    <g fill="#16201f" font-size="13">
+      <rect x="820" y="34" width="92" height="26" rx="8" fill="#fff" stroke="#e3e8e7"/><text x="866" y="51" text-anchor="middle">Glass box</text>
+      <rect x="922" y="34" width="82" height="26" rx="8" fill="#fff" stroke="#e3e8e7"/><text x="963" y="51" text-anchor="middle">New chat</text>
+      <rect x="1014" y="34" width="78" height="26" rx="8" fill="#fff" stroke="#e3e8e7"/><text x="1053" y="51" text-anchor="middle">Settings</text>
+      <rect x="1102" y="34" width="56" height="26" rx="8" fill="#fff" stroke="#e3e8e7"/><text x="1130" y="51" text-anchor="middle">Quit</text>
+    </g>
+
+    <!-- chat pane -->
+    <!-- user bubble -->
+    <rect x="470" y="100" width="330" height="40" rx="14" fill="#0d9488"/>
+    <text x="490" y="125" font-size="15" fill="#ffffff">What's the weather in Paris?</text>
+    <!-- assistant bubble -->
+    <rect x="44" y="160" width="360" height="40" rx="14" fill="#eef2f1"/>
+    <text x="64" y="185" font-size="15" fill="#16201f">It's 18°C and cloudy in Paris.<tspan fill="#0d9488" font-weight="700">▋</tspan></text>
+
+    <!-- composer -->
+    <line x1="20" y1="632" x2="800" y2="632" stroke="#e3e8e7"/>
+    <rect x="44" y="650" width="640" height="40" rx="10" fill="#f0f3f2" stroke="#e3e8e7"/>
+    <text x="60" y="675" font-size="14" fill="#94a3a0">Message glia…</text>
+    <rect x="694" y="650" width="86" height="40" rx="10" fill="#0d9488"/>
+    <text x="737" y="675" font-size="14" fill="#ffffff" text-anchor="middle">Send</text>
+
+    <!-- glass box (dark) -->
+    <rect x="800" y="72" width="380" height="628" fill="#0f1615"/>
+    <line x1="800" y1="72" x2="800" y2="700" stroke="#e3e8e7"/>
+    <text x="824" y="104" font-size="12" letter-spacing="1" fill="#9fc9c2">GLASS BOX · LIVE EVENTS</text>
+    <line x1="800" y1="120" x2="1180" y2="120" stroke="#1e2a28"/>
+    <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">
+      <text x="824" y="150" fill="#8aa6a1">run_started</text>
+      <text x="824" y="176" fill="#cfe6e2">model_call        <tspan fill="#8aa6a1">step 1</tspan></text>
+      <text x="824" y="202" fill="#7dd3fc">tool_called       get_weather({"city":"Paris"})</text>
+      <text x="824" y="228" fill="#86efac">tool_returned     get_weather → "18°C, cloudy"</text>
+      <text x="824" y="254" fill="#cfe6e2">model_call        <tspan fill="#8aa6a1">step 2</tspan></text>
+      <text x="824" y="280" fill="#cfe6e2">model_delta       It's 18°C and cloudy…</text>
+      <text x="824" y="306" fill="#8aa6a1">run_finished      end_turn</text>
+    </g>
+    <line x1="800" y1="672" x2="1180" y2="672" stroke="#1e2a28"/>
+    <text x="824" y="691" font-size="11" fill="#5f7a75">Every model call, tool call, and approval — as the library emits them.</text>
+  </g>
+  <rect x="20.5" y="20.5" width="1159" height="679" rx="14" fill="none" stroke="#d4dbda"/>
+</svg>

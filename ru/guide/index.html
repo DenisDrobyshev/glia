@@ -527,6 +527,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инструменты MCP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -812,6 +823,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инструменты MCP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -896,12 +918,14 @@
 при этом не падает.</p>
 <h2 id="_4">Провайдеры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>glia общается с моделями через один небольшой протокол <code>LLM</code> с единственным
-методом <code>async generate(request) -&gt; LLMResponse</code>. Поставляются три адаптера:</p>
+методом <code>async generate(request) -&gt; LLMResponse</code>. Поставляются четыре адаптера:</p>
 <ul>
 <li><strong><code>ClaudeLLM</code></strong> — Claude через Anthropic SDK (опциональный extra <code>[anthropic]</code>).</li>
+<li><strong><code>OpenAILLM</code></strong> — OpenAI <strong>или любой OpenAI-совместимый эндпоинт</strong> (Groq,
+  Together, OpenRouter, локальный vLLM…) через <code>base_url</code>. <strong>Без зависимостей</strong> —
+  HTTP из стандартной библиотеки.</li>
 <li><strong><code>OllamaLLM</code></strong> — локальные открытые модели (Qwen, DeepSeek, Llama…) через
-  локальный сервер <a href="https://ollama.com">Ollama</a>. <strong>Без зависимостей</strong> — использует
-  HTTP из стандартной библиотеки. Бесплатно и офлайн.</li>
+  локальный сервер <a href="https://ollama.com">Ollama</a>. <strong>Без зависимостей</strong>. Бесплатно.</li>
 <li><strong><code>EchoLLM</code></strong> — детерминированный, офлайн, для тестов и демо.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
@@ -1020,26 +1044,39 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">researcher</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">web_search</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;researcher&quot;</span><span class="p">)</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">lead</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">researcher</span><span class="o">.</span><span class="n">as_tool</span><span class="p">(</span><span class="s2">&quot;research&quot;</span><span class="p">,</span> <span class="s2">&quot;Искать в интернете&quot;</span><span class="p">)])</span>
 </code></pre></div>
+<h2 id="mcp">Инструменты MCP<a class="headerlink" href="#mcp" title="Permanent link">&para;</a></h2>
+<p>Используйте инструменты любого <a href="https://modelcontextprotocol.io">MCP</a>-сервера как
+инструменты glia. Установите опциональный extra (<code>pip install "glia-agents[mcp]"</code>)
+и откройте сессию — инструменты доступны на время блока <code>async with</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia.integrations.mcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">mcp_stdio_tools</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">async</span> <span class="k">with</span> <span class="n">mcp_stdio_tools</span><span class="p">(</span><span class="s2">&quot;npx&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;-y&quot;</span><span class="p">,</span> <span class="s2">&quot;@modelcontextprotocol/server-filesystem&quot;</span><span class="p">,</span> <span class="s2">&quot;/tmp&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">tools</span><span class="p">:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">tools</span><span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="k">await</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;Покажи файлы в /tmp&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><code>mcp_http_tools(url)</code> подключается по Streamable HTTP. Сам адаптер
+(<code>tools_from_mcp</code>) не имеет зависимостей, поэтому легко тестируется.</p>
 <h2 id="_10">Эвалы как тесты<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
 <p>Относитесь к эвалам как к юнит-тестам: набор промптов плюс проверки в стиле
 pytest, запускаемые в CI и блокирующие деплой.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia.evals</span><span class="w"> </span><span class="kn">import</span> <span class="n">Case</span><span class="p">,</span> <span class="n">evaluate</span><span class="p">,</span> <span class="n">contains</span><span class="p">,</span> <span class="n">used_tool</span><span class="p">,</span> <span class="n">did_not_error</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">suite</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">Case</span><span class="p">(</span><span class="s2">&quot;отвечает&quot;</span><span class="p">,</span> <span class="s2">&quot;сколько 2+2?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;4&quot;</span><span class="p">),</span> <span class="n">did_not_error</span><span class="p">]),</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">Case</span><span class="p">(</span><span class="s2">&quot;вызывает инструмент&quot;</span><span class="p">,</span> <span class="s2">&quot;сколько 2+2?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">used_tool</span><span class="p">(</span><span class="s2">&quot;add&quot;</span><span class="p">)]),</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">]</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">report</span> <span class="o">=</span> <span class="k">await</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">suite</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">add</span><span class="p">]))</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">assert</span> <span class="n">report</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="n">report</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">glia.evals</span><span class="w"> </span><span class="kn">import</span> <span class="n">Case</span><span class="p">,</span> <span class="n">evaluate</span><span class="p">,</span> <span class="n">contains</span><span class="p">,</span> <span class="n">used_tool</span><span class="p">,</span> <span class="n">did_not_error</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">suite</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">Case</span><span class="p">(</span><span class="s2">&quot;отвечает&quot;</span><span class="p">,</span> <span class="s2">&quot;сколько 2+2?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;4&quot;</span><span class="p">),</span> <span class="n">did_not_error</span><span class="p">]),</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">Case</span><span class="p">(</span><span class="s2">&quot;вызывает инструмент&quot;</span><span class="p">,</span> <span class="s2">&quot;сколько 2+2?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">used_tool</span><span class="p">(</span><span class="s2">&quot;add&quot;</span><span class="p">)]),</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">]</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">report</span> <span class="o">=</span> <span class="k">await</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">suite</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">add</span><span class="p">]))</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">assert</span> <span class="n">report</span><span class="o">.</span><span class="n">ok</span><span class="p">,</span> <span class="n">report</span>
 </code></pre></div>
 <h2 id="hooks">Наблюдаемость через hooks<a class="headerlink" href="#hooks" title="Permanent link">&para;</a></h2>
 <p>Hook — любой вызываемый объект, получающий каждое <code>Event</code> (синхронный или
 асинхронный). Через него проходят все события — логируйте, трассируйте или
 управляйте UI.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="p">[</span><span class="n">log</span><span class="p">])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="p">[</span><span class="n">log</span><span class="p">])</span>
 </code></pre></div>
 
 
