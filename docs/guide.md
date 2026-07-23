@@ -244,6 +244,28 @@ report = await evaluate(suite, lambda: Agent(llm, tools=[add]))
 assert report.ok, report
 ```
 
+## Record & replay (cassettes)
+
+Record a real provider's responses once, then replay them deterministically with
+no network and no API key — VCR for the `LLM` protocol. A cassette is a readable
+JSON file you can commit alongside your tests.
+
+```python
+from glia import Agent, use_cassette
+from glia.providers import ClaudeLLM
+
+# First run records (needs a key); later runs replay offline — identical output.
+llm = use_cassette("tests/cassettes/weather.json", ClaudeLLM)
+agent = Agent(llm, tools=[get_weather])
+result = await agent.run("What's the weather in Paris?")
+```
+
+`use_cassette` records if the file is missing and replays if it exists (force
+with `mode="record"` / `"replay"`). Under the hood it's `RecordingLLM` (wraps a
+real provider, writes the cassette) and `ReplayLLM` (serves recorded responses,
+matching each request by key with an ordered fallback). Streaming is supported
+in both directions.
+
 ## Observability with hooks
 
 A hook is any callable that receives each `Event` (sync or async). Every event

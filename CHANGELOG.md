@@ -4,6 +4,20 @@ All notable changes to glia are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] — 2026-07-23
+
+### Added
+- **Record/replay cassettes** (`glia.cassette`) — VCR for the `LLM` protocol.
+  Record a real provider's responses to a readable JSON cassette once, then
+  replay them deterministically with no network or API key.
+  - `RecordingLLM` wraps a real provider and writes the cassette; `ReplayLLM`
+    serves recorded responses, matching each request by key with an ordered
+    fallback (`strict=True` requires exact matches). Streaming works both ways.
+  - `use_cassette(path, provider_factory)` records if the cassette is missing
+    and replays if it exists (VCR "once" semantics); `mode="record"`/`"replay"`
+    force a direction.
+  - Example `09_record_replay.py`; documented in the Guide (EN + RU).
+
 ## [0.5.0] — 2026-07-23
 
 ### Added

@@ -113,6 +113,7 @@ await agent.run("follow-up question", trajectory=resumed)   # pick up where you 
 | **Guardrails** | `(text) -> None` validators for input and output |
 | **Subagents** | `agent.as_tool(...)` — any agent becomes a tool |
 | **Evals-as-tests** | a pytest-style regression harness for agent behaviour |
+| **Record & replay** | record real provider responses once, replay deterministically offline (VCR-style) |
 
 ## Examples
 
@@ -127,6 +128,7 @@ python examples/05_checkpoint_resume.py # durable execution
 python examples/06_evals.py             # eval suite
 python examples/07_streaming_and_approval.py # streaming + parallel tools + approval gate
 python examples/08_ollama_local.py           # run a local model (Qwen/DeepSeek) via Ollama
+python examples/09_record_replay.py          # record once, replay deterministically offline
 ```
 
 ## Desktop app
@@ -163,12 +165,12 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Status
 
-**v0.5 — alpha.** The core thesis is proven end-to-end with a full test suite
-(151 offline tests, ~95% coverage) and green CI (ruff + **mypy** + tests). v0.5
-adds an OpenAI provider, interactive tool approval in the desktop shell, and an
-MCP tool bridge; v0.4 added local models via Ollama; v0.3 a downloadable desktop
-shell; v0.2 streaming, parallel tools, and the approval gate. APIs may still
-change before 1.0. Feedback and issues welcome.
+**v0.6 — alpha.** The core thesis is proven end-to-end with a full test suite
+(159 offline tests, ~95% coverage) and green CI (ruff + **mypy** + tests). v0.6
+adds record/replay cassettes; v0.5 an OpenAI provider, interactive tool approval
+in the shell, and an MCP bridge; v0.4 local models via Ollama; v0.3 a
+downloadable desktop shell; v0.2 streaming, parallel tools, and the approval
+gate. APIs may still change before 1.0. Feedback and issues welcome.
 
 ## License
 

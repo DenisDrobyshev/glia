@@ -36,6 +36,7 @@ from .approval import (
     deny_all,
     prompt_in_terminal,
 )
+from .cassette import Cassette, RecordingLLM, ReplayLLM, use_cassette
 from .errors import (
     GliaError,
     GuardrailTripped,
@@ -64,7 +65,7 @@ from .trajectory import (
 )
 from .types import Message, Text, Thinking, ToolResult, ToolUse, Usage, assistant, user
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 __all__ = [
     "__version__",
@@ -110,6 +111,11 @@ __all__ = [
     "TrimmingCompactor",
     # structured output
     "generate_structured",
+    # record/replay cassettes
+    "use_cassette",
+    "RecordingLLM",
+    "ReplayLLM",
+    "Cassette",
     # approval (human-in-the-loop)
     "ApprovalPolicy",
     "ApprovalRequest",

@@ -251,6 +251,28 @@ report = await evaluate(suite, lambda: Agent(llm, tools=[add]))
 assert report.ok, report
 ```
 
+## Запись и воспроизведение (кассеты)
+
+Запишите ответы реального провайдера один раз, а затем воспроизводите их
+детерминированно без сети и без ключа API — это VCR для протокола `LLM`. Кассета
+— читаемый JSON-файл, который можно закоммитить рядом с тестами.
+
+```python
+from glia import Agent, use_cassette
+from glia.providers import ClaudeLLM
+
+# Первый запуск записывает (нужен ключ); последующие — воспроизводят офлайн.
+llm = use_cassette("tests/cassettes/weather.json", ClaudeLLM)
+agent = Agent(llm, tools=[get_weather])
+result = await agent.run("Какая погода в Париже?")
+```
+
+`use_cassette` записывает, если файла нет, и воспроизводит, если он есть
+(принудительно — `mode="record"` / `"replay"`). Под капотом это `RecordingLLM`
+(оборачивает реальный провайдер, пишет кассету) и `ReplayLLM` (отдаёт записанные
+ответы, сопоставляя запросы по ключу с откатом по порядку). Стриминг работает в
+обе стороны.
+
 ## Наблюдаемость через hooks
 
 Hook — любой вызываемый объект, получающий каждое `Event` (синхронный или
